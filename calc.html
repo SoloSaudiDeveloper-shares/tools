@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>حاسبة التمويل العقاري 🏡</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#3b82f6;--secondary:#f59e0b;--accent:#10b981;--danger:#ef4444;--surface:#ffffff;--bg:#f3f4f6;--text:#111827;
+}
+*{box-sizing:border-box;font-family:'Cairo',sans-serif;}
+body{margin:0;background:var(--bg);color:var(--text);padding:2rem;}
+.container{max-width:900px;margin:auto;background:var(--surface);border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,0.07);overflow:hidden;}
+header{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;padding:2rem;text-align:center;}
+header h1{margin:0;font-size:2rem;font-weight:700;}
+form{padding:2rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;}
+label{display:flex;align-items:center;font-weight:600;margin-bottom:.35rem;gap:.25rem;}
+label span.icon{font-size:1.2rem;}
+input[type="number"]{width:100%;padding:.6rem .9rem;border:2px solid var(--bg);border-radius:8px;font-size:1rem;transition:border .2s;background:#fafafa;}
+input[type="number"]:focus{outline:none;border-color:var(--primary);background:#fff;}
+input[type="checkbox"]{margin-inline-start:.3rem;transform:scale(1.2);}  /* checkbox rtl tweak */
+section.results{background:#fafafa;padding:2rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem;}
+.card{background:var(--surface);border-radius:12px;padding:1rem 1.2rem;display:flex;flex-direction:column;gap:.5rem;box-shadow:0 3px 12px rgba(0,0,0,0.06);} 
+.card h3{margin:0;font-size:1.05rem;font-weight:600;display:flex;align-items:center;gap:.35rem;}
+.card p{margin:0;font-size:1.25rem;font-weight:700;color:var(--primary);direction:ltr;text-align:left;}
+@media(max-width:500px){header h1{font-size:1.5rem}}
+</style>
+</head>
+<body>
+  <div class="container">
+    <header><h1>حاسبة التمويل العقاري التفاعلية</h1></header>
+
+    <form id="inputs">
+      <div>
+        <label for="cash"><span class="icon">💰</span>المبلغ المتوفر نقدًا</label>
+        <input type="number" id="cash" value="100000" min="0" step="0.01">
+      </div>
+      <div>
+        <label for="propertyValue"><span class="icon">🏠</span>قيمة العقار</label>
+        <input type="number" id="propertyValue" value="1350000" min="0" step="0.01">
+      </div>
+      <div>
+        <label for="salary"><span class="icon">💼</span>الراتب الشهري</label>
+        <input type="number" id="salary" value="27200" min="0" step="0.01">
+      </div>
+      <div>
+        <label for="obligations"><span class="icon">📑</span>الإلتزامات الشهرية</label>
+        <input type="number" id="obligations" value="0" min="0" step="0.01">
+      </div>
+      <div>
+        <label for="age"><span class="icon">🎂</span>العمر الحالي</label>
+        <input type="number" id="age" value="35" min="0" step="1">
+      </div>
+      <div>
+        <label for="loanYears"><span class="icon">📅</span>مدة القرض (سنة)</label>
+        <input type="number" id="loanYears" value="20" min="1" step="1">
+      </div>
+      <div>
+        <label for="annualRate"><span class="icon">📈</span>النسبة السنوية (%)</label>
+        <input type="number" id="annualRate" value="2.95" min="0" step="0.01">
+      </div>
+      <div style="align-self:end;display:flex;align-items:center;gap:.3rem;">
+        <label for="toggleDecimals"><span class="icon">🔢</span>إظهار الكسور العشرية</label>
+        <input type="checkbox" id="toggleDecimals" checked>
+      </div>
+    </form>
+
+    <section class="results" id="results">
+      <div class="card"><h3><span class="icon">💸</span>دفعة أولى 10%</h3><p id="dp10">-</p></div>
+      <div class="card"><h3><span class="icon">💸</span>دفعة أولى 25%</h3><p id="dp25">-</p></div>
+      <div class="card"><h3><span class="icon">💸</span>دفعة أولى 30%</h3><p id="dp30">-</p></div>
+      <div class="card"><h3><span class="icon">📊</span>المبلغ المتبقي</h3><p id="remainingAmount">-</p></div>
+      <div class="card"><h3><span class="icon">🔢</span>نسبة القرض الفعلية</h3><p id="effectivePercent">-</p></div>
+      <div class="card"><h3><span class="icon">🏦</span>تكلفة القرض</h3><p id="loanCost">-</p></div>
+      <div class="card"><h3><span class="icon">💳</span>إجمالي المبلغ المستحق</h3><p id="totalRepay">-</p></div>
+      <div class="card"><h3><span class="icon">📥</span>القسط الشهري</h3><p id="monthlyPayment">-</p></div>
+      <div class="card"><h3><span class="icon">🪙</span>الراتب المتبقي بعد القسط</h3><p id="remainingSalary">-</p></div>
+      <div class="card"><h3><span class="icon">📉</span>بعد الإلتزامات</h3><p id="afterObligations">-</p></div>
+      <div class="card"><h3><span class="icon">⏳</span>العمر عند السداد</h3><p id="ageAfterLoan">-</p></div>
+    </section>
+  </div>
+<script>
+const inputs=document.querySelectorAll('#inputs input');inputs.forEach(i=>i.addEventListener('input',recalc));recalc();
+function f(num){const showDecimals=document.getElementById('toggleDecimals').checked;const digits=showDecimals?2:0;return new Intl.NumberFormat('ar-SA',{maximumFractionDigits:digits,minimumFractionDigits:0}).format(num);}  
+function val(id){return parseFloat(document.getElementById(id).value)||0;}
+function set(id,value){const el=document.getElementById(id);if(typeof value==='string'){el.textContent=value;}else{el.textContent=f(value);}}
+function recalc(){
+  const cash=val('cash'),property=val('propertyValue'),salary=val('salary'),ob=val('obligations'),age=val('age'),years=val('loanYears'),rate=val('annualRate')/100;
+  const dp10=property*.10,dp25=property*.25,dp30=property*.30;
+  const remaining=property-cash;
+  const effPct=(years>0)?rate*years:0;
+  const cost=effPct*remaining;
+  const total=cost+remaining;
+  const monthly=(years>0)?total/(years*12):0;
+  const afterPay=salary-monthly;
+  const afterOb=afterPay-ob;
+  const ageEnd=age+years;
+  set('dp10',dp10);set('dp25',dp25);set('dp30',dp30);
+  set('remainingAmount',remaining);
+  set('effectivePercent',`${(effPct*100).toFixed(2)}%`);
+  set('loanCost',cost);
+  set('totalRepay',total);
+  set('monthlyPayment',monthly);
+  set('remainingSalary',afterPay);
+  set('afterObligations',afterOb);
+  set('ageAfterLoan',ageEnd);
+}
+</script>
+</body>
+</html>
